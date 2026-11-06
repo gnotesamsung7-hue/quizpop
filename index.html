@@ -2582,6 +2582,91 @@ pre.rules{ background:var(--surface); border:2px solid var(--line); border-radiu
 .nick{ border:2px solid var(--line); background:var(--surface-2); color:var(--ink); border-radius:999px; padding:6px 12px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; min-height:36px; }
 .nick:hover{ border-color:var(--brand); }
 .nick-last{ background:transparent; }
+
+/* Pinoy scenes */
+.board-wrap{ display:grid; grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr); gap:20px; width:100%; max-width:1400px; margin:0 auto; align-items:start; }
+.board-wrap .board{ max-width:none; }
+.board-wrap .lb-row{ font-size:20px; padding:10px 14px; }
+@media (max-width:1000px){ .board-wrap{ grid-template-columns:1fr; } }
+.scene{ container-type:size; position:relative; height:clamp(300px,58vh,560px); border-radius:24px; overflow:hidden; color:#151C3D; isolation:isolate; }
+.scene-title{ position:absolute; top:14px; left:16px; z-index:8; background:#fff; font-weight:800; font-size:clamp(16px,1.8vw,24px); padding:6px 16px; border-radius:999px; box-shadow:0 3px 0 rgba(0,0,0,.18); }
+.scene-empty{ position:absolute; inset:0; display:grid; place-items:center; font-weight:700; }
+.racer{ position:absolute; z-index:5; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px;
+  transition:left 1.6s cubic-bezier(.45,0,.2,1), bottom 1.6s cubic-bezier(.45,0,.2,1); }
+.racer .tag{ background:#fff; font-weight:700; font-size:clamp(11px,1.05vw,15px); padding:2px 8px; border-radius:8px; white-space:nowrap; max-width:clamp(90px,11vw,170px);
+  overflow:hidden; text-overflow:ellipsis; box-shadow:0 2px 0 rgba(0,0,0,.18); }
+.racer .tag b{ color:#2440E6; } .racer .tag em{ font-style:normal; color:#555E82; font-weight:600; }
+.racer.r1 .tag{ background:#F2A900; } .racer.r1 .tag b, .racer.r1 .tag em{ color:#2A1E00; }
+.racer.alt .tag{ transform:translateY(-30px); }
+.person{ width:clamp(30px,3.2vw,48px); height:auto; display:block; }
+.moving .person{ animation:bob .28s ease-in-out infinite alternate; }
+.scene.done .moving .person{ animation:none; }
+@keyframes bob{ from{ transform:translateY(0) rotate(-3deg); } to{ transform:translateY(-4px) rotate(3deg); } }
+.bubble{ position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%) scale(.4); opacity:0; background:#fff; border:2px solid #151C3D; border-radius:14px;
+  padding:4px 10px; font-weight:800; font-size:clamp(11px,1.1vw,15px); white-space:nowrap; transition:transform .35s cubic-bezier(.2,1.4,.4,1), opacity .25s; z-index:9; }
+.bubble::after{ content:""; position:absolute; top:100%; left:50%; margin-left:-6px; border:6px solid transparent; border-top-color:#151C3D; }
+.bubble.win{ background:#FFF3C4; }
+.racer.alt .bubble{ bottom:calc(100% + 36px); }
+.scene.done .bubble{ opacity:1; transform:translateX(-50%) scale(1); }
+.scene.done .r1 .person{ animation:cheer .5s ease-in-out 3 alternate; }
+@keyframes cheer{ to{ transform:translateY(-10px); } }
+.bunting{ position:absolute; top:0; left:0; right:0; height:34px; display:flex; justify-content:space-around; z-index:2; }
+.bunting::before{ content:""; position:absolute; top:6px; left:0; right:0; height:2px; background:#8A6B2E; }
+.bunting i{ width:22px; height:26px; margin-top:7px; clip-path:polygon(0 0,100% 0,50% 100%); }
+/* palosebo */
+.scene-palosebo{ background:linear-gradient(#7FC8F8, #CDEBFF 70%); }
+.scene-palosebo .sun{ position:absolute; right:7%; top:14%; width:70px; height:70px; border-radius:50%; background:#FFD34D; box-shadow:0 0 40px #FFD34D; }
+.scene-palosebo .ground{ position:absolute; left:0; right:0; bottom:0; height:11%; background:#6BBF59; z-index:1; }
+.scene-palosebo .crowd{ position:absolute; left:0; right:0; bottom:9%; height:9%; z-index:1; opacity:.35;
+  background:radial-gradient(circle at 12px 10px, #3A2A1E 9px, transparent 10px) 0 0/34px 100% repeat-x; }
+.pole{ position:absolute; bottom:9%; height:76%; width:14px; transform:translateX(-50%); z-index:3; border-radius:7px;
+  background:repeating-linear-gradient(to top, #D3B46A 0 34px, #8A6B2E 34px 38px); box-shadow:inset 4px 0 0 rgba(255,255,255,.55); }
+.prize{ position:absolute; top:-30px; left:50%; transform:translateX(-50%); width:30px; height:30px; border-radius:50% 50% 45% 45%; background:#E8455F; color:#fff;
+  display:grid; place-items:center; font-weight:800; font-size:15px; box-shadow:0 2px 0 rgba(0,0,0,.2); }
+.scene-palosebo .racer{ transform:translateX(-50%); }
+/* mrt */
+.scene-mrt{ background:#DCE3EE; }
+.scene-mrt .wall{ position:absolute; inset:0 0 30% 0; background:repeating-linear-gradient(90deg,#E9EEF5 0 60px,#DFE5EE 60px 62px); }
+.scene-mrt .platform{ position:absolute; left:0; right:0; bottom:0; height:30%; background:#A9B3C2; z-index:1; }
+.scene-mrt .yline{ position:absolute; top:10px; left:0; right:0; height:8px; background:repeating-linear-gradient(90deg,#F2C200 0 26px,#151C3D 26px 30px); }
+.sign{ position:absolute; z-index:2; background:#1E3A8A; color:#fff; font-weight:800; padding:6px 12px; border-radius:8px; font-size:clamp(12px,1.2vw,16px); }
+.sign.pila{ left:36%; top:16%; } .sign.next{ left:36%; top:30%; background:#151C3D; color:#F2C200; font-family:ui-monospace, Menlo, monospace; }
+.train{ position:absolute; right:-2%; bottom:26%; width:19%; height:54%; z-index:2; background:linear-gradient(#F4F6FA,#C9D1DD); border-radius:20px 0 0 8px; border:3px solid #8A94A6; }
+.train .win{ position:absolute; top:12%; height:22%; width:30%; background:#2B3354; border-radius:6px; } .train .w1{ left:8%; } .train .w2{ left:62%; }
+.train .stripe{ position:absolute; left:0; right:0; bottom:18%; height:8px; background:#2440E6; }
+.train .door{ position:absolute; left:30%; width:34%; top:8%; bottom:0; background:#3A4466; overflow:hidden; }
+.train .door i{ position:absolute; top:0; bottom:0; width:50%; background:#B7C0CE; border:2px solid #8A94A6; transition:transform .6s ease; }
+.train .dl{ left:0; } .train .dr{ right:0; }
+.scene.done .train .dl{ transform:translateX(-90%); } .scene.done .train .dr{ transform:translateX(90%); }
+/* ayuda */
+.scene-ayuda{ background:#FFE7B8; }
+.scene-ayuda .hall{ position:absolute; left:0; right:0; bottom:0; height:22%; background:#C98B4B; z-index:1; }
+.scene-ayuda .banner{ position:absolute; z-index:2; right:3%; top:16%; background:#1FA34A; color:#fff; font-weight:800; padding:8px 14px; border-radius:10px; font-size:clamp(13px,1.4vw,19px); transform:rotate(-2deg); }
+.scene-ayuda .table{ position:absolute; z-index:4; right:4%; bottom:14%; width:15%; height:16%; background:#2440E6; border-radius:6px 6px 0 0; display:grid; place-items:center; color:#fff; font-weight:800; font-size:22px; }
+.scene-ayuda .official{ position:absolute; z-index:3; right:8%; bottom:26%; }
+.scene-ayuda .official .person{ width:clamp(34px,3.6vw,52px); }
+.envelope{ position:absolute; z-index:9; left:74%; bottom:44%; transform:translate(-50%,20px) scale(.3); opacity:0; width:44px; height:30px; background:#fff; border:2px solid #151C3D; border-radius:4px; display:grid; place-items:center; font-weight:800; color:#1FA34A; }
+.scene.done .envelope{ animation:envelope 1.4s ease forwards; }
+@keyframes envelope{ 0%{ opacity:0; transform:translate(-50%,20px) scale(.3); } 30%{ opacity:1; transform:translate(-50%,-14px) scale(1.15); } 100%{ opacity:1; transform:translate(-50%,-6px) scale(1) rotate(-8deg); } }
+/* jeep */
+.scene-jeep{ background:#9FD48A; }
+.scene-jeep .road{ position:absolute; left:0; right:0; top:16%; bottom:3%; background:#5B6475; }
+.scene-jeep .lane{ position:absolute; left:0; right:0; height:3px; background:repeating-linear-gradient(90deg,#F4F6FA 0 30px,transparent 30px 60px); opacity:.7; }
+.scene-jeep .finish{ position:absolute; top:16%; bottom:3%; left:89%; width:22px; z-index:2; background:repeating-conic-gradient(#151C3D 0 25%, #fff 0 50%) 0 0/22px 22px; }
+.sign.dest{ left:auto; right:2%; top:4%; background:#E8455F; }
+.scene-jeep .racer{ flex-direction:row; align-items:flex-end; transform:translateX(-100%); gap:6px; }
+.scene-jeep .racer .tag{ margin-bottom:22px; }
+.scene-jeep .bubble{ left:70%; }
+.jeep{ width:clamp(64px,7vw,100px); height:auto; display:block; overflow:visible; }
+.moving .jeep{ animation:rumble .16s linear infinite alternate; }
+.scene.done .moving .jeep{ animation:none; }
+@keyframes rumble{ to{ transform:translateY(-2px); } }
+.puff{ opacity:0; } .moving .puff{ animation:puff .6s ease-out infinite; } .moving .p2{ animation-delay:.3s; } .scene.done .puff{ animation:none; opacity:0; }
+@keyframes puff{ from{ opacity:.9; transform:translateX(0) scale(.6); } to{ opacity:0; transform:translateX(-18px) scale(1.6); } }
+.scene-mrt .tag, .scene-ayuda .tag{ max-width:12.5cqw; }
+.scene-palosebo .tag{ max-width:15cqw; }
+.scene-jeep .tag{ max-width:24cqw; }
+@media (prefers-reduced-motion:reduce){ .racer{ transition:none; } }
 </style>
 </head>
 <body>
@@ -2962,7 +3047,7 @@ function scoreFor(q, ms, streak){
 /* ---------- HOST ---------- */
 let H = null;
 const MAX_PLAYERS = 90;
-let hostSetupQuiz = null, setupMode = 'classic', setupTeams = 2;
+let hostSetupQuiz = null, setupMode = 'classic', setupTeams = 2, setupScenes = true;
 function needNet(){
   if (netStatus === 'ready') return true;
   if (netStatus === 'setup'){ go('setup'); return false; }
@@ -2980,14 +3065,16 @@ RENDER.hostSetup = () => {
       <button class="action" data-act="setMode" data-m="teams" style="${setupMode === 'teams' ? 'border-color:var(--brand)' : ''}" aria-pressed="${setupMode === 'teams'}"><div class="glyph o1">${shape(1,'icon')}</div><b>Teams</b><span>Players pick a team on their phone. Team score is the average per player, so smaller teams can still win.</span></button>
     </div>
     ${setupMode === 'teams' ? `<div class="row" style="margin-top:18px"><span class="muted">Number of teams</span>${[2,3,4].map(n => `<button class="btn ${setupTeams === n ? 'btn-primary' : ''}" data-act="setTeams" data-n="${n}">${n}</button>`).join('')}</div>` : ''}
+    <div class="row" style="margin-top:22px"><span class="muted">Leaderboard</span><button class="btn ${setupScenes ? 'btn-primary' : ''}" data-act="setScenes" data-v="1">Pinoy scenes</button><button class="btn ${setupScenes ? '' : 'btn-primary'}" data-act="setScenes" data-v="0">Plain list</button><span class="muted small">Palosebo, MRT line, ayuda payout and jeepney race, one after another</span></div>
     <div class="row" style="margin-top:28px"><button class="btn btn-primary btn-big" data-act="hostCreate">Open the lobby</button></div>
   </div>`;
 };
 ACT.setMode = el => { setupMode = el.dataset.m; render(); };
 ACT.setTeams = el => { setupTeams = +el.dataset.n; render(); };
+ACT.setScenes = el => { setupScenes = el.dataset.v === '1'; render(); };
 ACT.hostCreate = async el => {
   el.disabled = true;
-  const ok = await hostStart({ quiz: clone(hostSetupQuiz), mode: setupMode, teamCount: setupTeams, phase: 'lobby', qi: -1, players: [], ban: [] }, true);
+  const ok = await hostStart({ quiz: clone(hostSetupQuiz), mode: setupMode, teamCount: setupTeams, scenes: setupScenes, phase: 'lobby', qi: -1, players: [], ban: [] }, true);
   if (!ok) el.disabled = false;
 };
 async function claimPin(){
@@ -3014,7 +3101,7 @@ async function hostStart(saved, fresh){
     return false;
   }
   H = {
-    pin, ref, quiz: saved.quiz, mode: saved.mode, teamCount: saved.teamCount || 2,
+    pin, ref, quiz: saved.quiz, mode: saved.mode, teamCount: saved.teamCount || 2, scenes: saved.scenes !== false, prevScores: new Map(), prevOrder: [],
     since: Date.now(), phase: saved.phase, qi: saved.qi, qid: null, qStart: 0,
     players: new Map((saved.players || []).map(p => [p.pid, { ...p, online: false }])),
     ban: new Set(saved.ban || []), answers: new Map(), dist: [0,0,0,0], timers: [], tick: null, prevRanks: new Map()
@@ -3038,7 +3125,7 @@ ACT.discardResume = () => {
 };
 function saveHost(){
   if (!H) return;
-  lsSet('qp.host', { pin: H.pin, quiz: H.quiz, mode: H.mode, teamCount: H.teamCount, phase: H.phase, qi: H.qi,
+  lsSet('qp.host', { pin: H.pin, quiz: H.quiz, mode: H.mode, teamCount: H.teamCount, scenes: H.scenes, phase: H.phase, qi: H.qi,
     players: [...H.players.values()].map(({ online, ...p }) => p), ban: [...H.ban], savedAt: Date.now() });
 }
 function endHosting(close){
@@ -3105,6 +3192,7 @@ function pushState(){
   const q = H.quiz.questions[H.qi];
   const s = { v: 1, since: H.since, mode: H.mode, phase: H.phase, qi: H.qi, qn: H.quiz.questions.length, qid: H.qid || '', title: cut(H.quiz.title, 60) };
   if (H.mode === 'teams'){ s.tc = H.teamCount; s.ts = teamScores().map(t => t.avg); }
+  if (H.phase === 'board' && H.scenes !== false) s.scene = sceneKey(H.qi);
   if (q && H.phase !== 'lobby' && H.phase !== 'final'){ s.lim = q.lim; s.kind = q.kind; s.nopt = q.opts.length; s.m = q.opts.map(o => o ? 1 : 0); }
   if (q && (H.phase === 'question' || H.phase === 'reveal')){ s.q = cut(q.text, 200); s.o = q.opts.map(o => o || ''); }
   if (q && H.phase === 'reveal') s.ok = q.ok;
@@ -3151,7 +3239,10 @@ function endQuestion(){
   if (!H || H.phase !== 'question') return;
   H.timers.forEach(clearTimeout); H.timers = []; clearInterval(H.tick);
   const q = H.quiz.questions[H.qi];
-  H.prevRanks = new Map(ranked().map(p => [p.pid, p.rank]));
+  const before = ranked();
+  H.prevRanks = new Map(before.map(p => [p.pid, p.rank]));
+  H.prevScores = new Map(before.map(p => [p.pid, p.score]));
+  H.prevOrder = before.map(p => p.pid);
   H.dist = q.opts.map(() => 0);
   for (const pl of H.players.values()){
     const a = H.answers.get(pl.pid);
@@ -3194,6 +3285,7 @@ function ringSvg(){
 function hostAfterRender(){
   if (!H) return;
   clearInterval(H.tick);
+  if (H.phase === 'board') animateScene();
   if (H.phase === 'question'){
     const q = H.quiz.questions[H.qi]; const C = 2 * Math.PI * 44;
     const upd = () => {
@@ -3218,6 +3310,92 @@ ACT.hostQr = () => { if (!H) return; H.showQr = true; render(); };
 ACT.hostQrClose = () => { if (!H) return; H.showQr = false; render(); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && H && H.showQr){ H.showQr = false; render(); } });
 function chip(p){ return `<button class="chip ${p.online ? '' : 'off'}" data-act="kick" data-pid="${esc(p.pid)}" title="Remove ${esc(p.name)}">${esc(p.name)}</button>`; }
+
+/* ---------- Pinoy pop leaderboard scenes ---------- */
+const SCENES = {
+  palosebo: { title: 'Palosebo Challenge', lead: 'Premyo ko ’to!', drop: 'Dulas!', kind: 'height', phone: 'up the palosebo' },
+  mrt:      { title: 'Pila sa MRT', lead: 'Nakasakay na!', drop: 'Uy, may sumingit!', kind: 'queue', phone: 'in the MRT line' },
+  ayuda:    { title: 'Ayuda Payout', lead: 'Salamat po, Kap!', drop: 'Nasaan ID ko?', kind: 'queue', phone: 'in the ayuda line' },
+  jeep:     { title: 'Karera ng Jeep', lead: 'Para po! Panalo!', drop: 'Na-flat!', kind: 'lanes', phone: 'in the jeepney race' }
+};
+const SCENE_ORDER = ['palosebo', 'mrt', 'ayuda', 'jeep'];
+const sceneKey = qi => SCENE_ORDER[Math.max(0, qi) % SCENE_ORDER.length];
+const SHIRTS = ['#E8455F','#0F9E8E','#F2A900','#3B6CF2','#8E5BD9','#FF7A2F','#1FA34A','#D14FA0'];
+const SKINS = ['#F2C9A0','#D9A574','#B9814F','#8D5A34','#E8B98C'];
+const HAIRS = ['#1E1A17','#3A2A1E','#2B2B2B','#5A3A22'];
+function hashStr(s){ let h = 7; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+function personSvg(seed, pose){
+  const h = hashStr(seed), shirt = SHIRTS[h % 8], skin = SKINS[(h >>> 3) % 5], hair = HAIRS[(h >>> 6) % 4];
+  const arms = pose === 'climb'
+    ? `<rect x="5" y="2" width="6" height="22" rx="3" fill="${shirt}"/><rect x="29" y="2" width="6" height="22" rx="3" fill="${shirt}"/><circle cx="8" cy="3" r="3.2" fill="${skin}"/><circle cx="32" cy="3" r="3.2" fill="${skin}"/>`
+    : `<rect x="4" y="25" width="6" height="16" rx="3" fill="${shirt}"/><rect x="30" y="25" width="6" height="16" rx="3" fill="${shirt}"/>`;
+  const legs = pose === 'climb'
+    ? `<rect x="9" y="42" width="7" height="14" rx="3" fill="#2B3354" transform="rotate(18 12 44)"/><rect x="24" y="42" width="7" height="14" rx="3" fill="#2B3354" transform="rotate(-18 28 44)"/>`
+    : `<rect x="12" y="42" width="7" height="16" rx="3" fill="#2B3354"/><rect x="21" y="42" width="7" height="16" rx="3" fill="#2B3354"/>`;
+  return `<svg class="person" viewBox="0 0 40 60" aria-hidden="true">${arms}<rect x="9" y="22" width="22" height="23" rx="9" fill="${shirt}"/>${legs}<circle cx="20" cy="13" r="9" fill="${skin}"/><path d="M11 12a9 9 0 0 1 18 0q-4-5-9-5t-9 5z" fill="${hair}"/><circle cx="16.5" cy="14" r="1.2" fill="#1E1A17"/><circle cx="23.5" cy="14" r="1.2" fill="#1E1A17"/><path d="M16.5 17.5q3.5 3 7 0" stroke="#1E1A17" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>`;
+}
+function jeepSvg(seed){
+  const h = hashStr(seed), body = SHIRTS[h % 8], skin = SKINS[(h >>> 3) % 5];
+  return `<svg class="jeep" viewBox="0 0 124 62" aria-hidden="true">
+    <rect x="16" y="3" width="84" height="9" rx="4" fill="#E9EDF5"/><rect x="96" y="0" width="4" height="10" fill="#8A6B2E"/><path d="M100 1l10 3-10 3z" fill="#E8455F"/>
+    <rect x="6" y="11" width="100" height="32" rx="6" fill="${body}"/><path d="M106 22h10q4 0 4 4v13q0 4-4 4h-10z" fill="${body}"/>
+    <rect x="12" y="16" width="16" height="12" rx="2" fill="#BFE6FF"/><rect x="32" y="16" width="16" height="12" rx="2" fill="#BFE6FF"/><rect x="52" y="16" width="16" height="12" rx="2" fill="#BFE6FF"/><rect x="74" y="16" width="26" height="12" rx="2" fill="#BFE6FF"/>
+    <circle cx="90" cy="23" r="5" fill="${skin}"/><path d="M85 22a5 5 0 0 1 10 0z" fill="#1E1A17"/>
+    <rect x="6" y="32" width="114" height="4" fill="#fff" opacity=".85"/><rect x="2" y="40" width="120" height="4" rx="2" fill="#C7CED9"/>
+    <circle cx="28" cy="48" r="9" fill="#1E1A17"/><circle cx="28" cy="48" r="3.5" fill="#C7CED9"/><circle cx="96" cy="48" r="9" fill="#1E1A17"/><circle cx="96" cy="48" r="3.5" fill="#C7CED9"/>
+    <circle class="puff p1" cx="0" cy="40" r="4" fill="#C7CED9"/><circle class="puff p2" cx="-4" cy="36" r="3" fill="#C7CED9"/></svg>`;
+}
+function sceneDeco(key, n){
+  const bunting = `<div class="bunting">${Array.from({ length: 18 }, (_, i) => `<i style="background:${SHIRTS[i % 8]}"></i>`).join('')}</div>`;
+  if (key === 'palosebo'){
+    const poles = Array.from({ length: n }, (_, i) => `<div class="pole" style="left:${(i + 0.5) / n * 100}%"><span class="prize">₱</span></div>`).join('');
+    return `<div class="sun"></div>${bunting}<div class="ground"></div><div class="crowd"></div>${poles}`;
+  }
+  if (key === 'mrt'){
+    return `<div class="wall"></div><div class="platform"><div class="yline"></div></div><div class="sign pila">PILA DITO →</div><div class="sign next">Susunod na tren: 2 min</div>
+      <div class="train"><div class="win w1"></div><div class="win w2"></div><div class="door"><i class="dl"></i><i class="dr"></i></div><div class="stripe"></div></div>`;
+  }
+  if (key === 'ayuda'){
+    return `<div class="hall"></div>${bunting}<div class="banner">AYUDA PAYOUT · Brgy. QuizPop</div>
+      <div class="official">${personSvg('kapitan', 'stand')}</div><div class="table"><span>₱</span></div><div class="envelope">₱</div>`;
+  }
+  return `<div class="road">${Array.from({ length: n }, (_, i) => `<div class="lane" style="bottom:${6 + i * (80 / Math.max(n, 1))}%"></div>`).join('')}</div><div class="finish"></div><div class="sign dest">QUIAPO</div>`;
+}
+function sceneHtml(){
+  const key = sceneKey(H.qi), sc = SCENES[key];
+  const list = ranked().slice(0, sc.kind === 'height' ? 6 : 5), n = list.length;
+  const total = H.quiz.questions.reduce((a, q) => a + 1000 * (q.pts || 0), 0) || 1000;
+  const frac = v => clamp(v / (total * 0.85), 0, 1);
+  const prevIdx = new Map((H.prevOrder || []).map((pid, i) => [pid, i]));
+  const slot = k => k >= n ? -12 : (key === 'mrt' ? 80 : 74) - k * (66 / Math.max(n, 4));
+  // only one 'oops' bubble per scene: the biggest drop, else someone who scored nothing
+  let oops = null, worst = 0;
+  list.forEach((p, i) => { const pi = prevIdx.has(p.pid) ? prevIdx.get(p.pid) : -1; if (i > 0 && pi >= 0 && i - pi > worst){ worst = i - pi; oops = p.pid; } });
+  if (!oops && H.qi >= 0){ const z = list.find((p, i) => i > 0 && p.lastPts === 0); if (z) oops = z.pid; }
+  const racers = list.map((p, i) => {
+    const ps = H.prevScores && H.prevScores.has(p.pid) ? H.prevScores.get(p.pid) : 0;
+    const pi = prevIdx.has(p.pid) ? prevIdx.get(p.pid) : n + 1;
+    let prop, from, to, pos;
+    if (sc.kind === 'height'){ prop = 'bottom'; from = 9 + frac(ps) * 62; to = 9 + frac(p.score) * 62; pos = `left:${(i + 0.5) / n * 100}%;`; }
+    else if (sc.kind === 'lanes'){ prop = 'left'; from = 36 + frac(ps) * 50; to = 36 + frac(p.score) * 50; pos = `bottom:${6 + (n - 1 - i) * (78 / n)}%;`; }
+    else { prop = 'left'; from = slot(pi); to = slot(i); pos = 'bottom:14%;'; }
+    const moving = Math.abs(to - from) > 0.4;
+    const bubble = i === 0 ? sc.lead : (p.pid === oops ? sc.drop : '');
+    const fig = sc.kind === 'lanes' ? jeepSvg(p.pid) : personSvg(p.pid, sc.kind === 'height' ? 'climb' : 'stand');
+    return `<div class="racer r${i + 1} ${moving ? 'moving' : ''} ${i % 2 && sc.kind === 'queue' ? 'alt' : ''}" style="${pos}${prop}:${from}%;transition-delay:${((n - i) * 0.12).toFixed(2)}s" data-prop="${prop}" data-to="${to}">
+      ${bubble ? `<span class="bubble ${i === 0 ? 'win' : ''}">${esc(bubble)}</span>` : ''}
+      <span class="tag"><b>${p.rank}</b> ${esc(p.name)}${sc.kind === 'queue' ? '' : ` <em>${fmt(p.score)}</em>`}</span>${fig}</div>`;
+  }).join('');
+  return `<div class="scene scene-${key}" role="img" aria-label="${esc(sc.title)}: animated standings"><span class="scene-title">${sc.title}</span>${sceneDeco(key, n)}${racers}${n ? '' : '<p class="scene-empty">Wala pang players</p>'}</div>`;
+}
+function animateScene(){
+  const scene = app.querySelector('.scene'); if (!scene) return;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    scene.querySelectorAll('.racer[data-to]').forEach(el => { el.style[el.dataset.prop] = el.dataset.to + '%'; });
+    const n = scene.querySelectorAll('.racer').length;
+    setTimeout(() => scene.classList.add('done'), 1700 + n * 120);
+  }));
+}
 
 RENDER.host = () => {
   if (!H) return RENDER.home();
@@ -3295,12 +3473,14 @@ RENDER.host = () => {
     }).join('');
     const teams = H.mode === 'teams' ? teamScores().sort((a, b) => b.avg - a.avg).map(t => `<div class="team-row o${t.i}">${shape(t.i)}<span>${t.name} <span style="font-weight:600;opacity:.85;font-size:.7em">${t.n} player${t.n === 1 ? '' : 's'}</span></span><span>${fmt(t.avg)}</span></div>`).join('') : '';
     const last = H.qi + 1 >= H.quiz.questions.length;
-    return `<div class="host">${top}<div class="stage"><div class="board">
+    const standings = `<div class="board">
       <div class="spread"><h2>${H.mode === 'teams' ? 'Team standings' : 'Leaderboard'}</h2><span class="muted">After question ${H.qi + 1} of ${H.quiz.questions.length}</span></div>
       ${teams}${H.mode === 'teams' ? '<h3 style="margin-top:14px">Top players</h3>' : ''}
       ${rows || '<p class="muted">No scores yet.</p>'}
       <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn btn-primary btn-big" data-act="hostNext">${last ? 'Show the winners' : 'Next question'}</button></div>
-    </div></div></div>`;
+    </div>`;
+    if (H.scenes === false) return `<div class="host">${top}<div class="stage">${standings}</div></div>`;
+    return `<div class="host">${top}<div class="stage"><div class="board-wrap">${sceneHtml()}${standings}</div></div></div>`;
   }
 
   if (H.phase === 'final'){
@@ -3489,7 +3669,8 @@ RENDER.player = () => {
     if (rank > 1){ const ahead = Object.values(s.sc).filter(v => v[1] < rank).sort((a, b) => a[0] - b[0])[0]; if (ahead) gap = `<p class="muted">${fmt(ahead[0] - score)} points behind ${ord(ahead[1])} place</p>`; }
     const ts = arr(s.ts);
     const team = s.mode === 'teams' && me[5] >= 0 && ts.length ? `<p>${TEAM_NAMES[me[5]]}: ${fmt(ts[me[5]])} average</p>` : '';
-    return wrapState('state-wait', `<p class="muted">You’re in</p><p class="huge">${ord(rank)}</p>${gap}${team}`);
+    const flav = s.scene && SCENES[s.scene] ? `<p class="muted">${ord(rank)} ${SCENES[s.scene].phone}${rank === 1 ? '. Nasa unahan ka!' : ''}</p>` : '';
+    return wrapState('state-wait', `<p class="muted">You’re in</p><p class="huge">${ord(rank)}</p>${flav}${gap}${team}`);
   }
   if (s.phase === 'final'){
     if (!me) return wrapState('', `<h2>Game over</h2>`);
