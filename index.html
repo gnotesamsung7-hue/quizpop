@@ -2575,6 +2575,13 @@ textarea.input{ resize:vertical; min-height:84px; }
 .qr-overlay .url{ font-size:18px; color:#555E82; }
 ol.steps{ margin:18px 0 0; padding-left:22px; display:flex; flex-direction:column; gap:8px; max-width:70ch; }
 pre.rules{ background:var(--surface); border:2px solid var(--line); border-radius:var(--radius); padding:14px; overflow-x:auto; font-size:13px; line-height:1.5; margin-top:10px; }
+.nick-row{ display:flex; gap:8px; }
+.nick-row .input{ flex:1; min-width:0; font-weight:600; }
+.dice{ font-size:22px; padding:6px 14px; }
+.nick-chips{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:4px; }
+.nick{ border:2px solid var(--line); background:var(--surface-2); color:var(--ink); border-radius:999px; padding:6px 12px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; min-height:36px; }
+.nick:hover{ border-color:var(--brand); }
+.nick-last{ background:transparent; }
 </style>
 </head>
 <body>
@@ -2693,7 +2700,9 @@ function go(v, arg = null){ view = v; viewArg = arg; render(); window.scrollTo(0
 function rerenderIf(views){ if (views.includes(view)) render(); }
 function render(){
   const r = RENDER[view] || RENDER.home;
+  const keep = view === 'join' ? ['jpin','jname'].map(id => { const el = document.getElementById(id); return el ? [id, el.value] : null; }).filter(Boolean) : [];
   app.innerHTML = r(viewArg);
+  keep.forEach(([id, v]) => { const el = document.getElementById(id); if (el && v) el.value = v; });
   const af = app.querySelector('[data-autofocus]'); if (af) af.focus();
   if (view === 'host') hostAfterRender();
 }
@@ -3311,6 +3320,34 @@ RENDER.host = () => {
   return '';
 };
 
+
+/* ---------- funny nicknames ---------- */
+const NICK_ADJ = ['Turbo','Sneaky','Captain','Sir','Lady','Mighty','Spicy','Crispy','Sleepy','Fluffy','Grumpy','Dancing','Lucky','Major','Professor','Ninja','Cosmic','Jolly','Zippy','Bouncy','Chill','Sassy','Wobbly','Fancy','Ultra','Mega','Tito','Tita','Kuya','Ate','Boss','Agent','Doctor','Saucy','Humble','Loud','Tiny','Giant','Shy','Brave'];
+const NICK_NOUN = ['Turon','Kwek-Kwek','Siopao','Lumpia','Taho','Halo-Halo','Bibingka','Puto','Ensaymada','Pandesal','Adobo','Sinigang','Lechon','Banana Cue','Fishball','Mango','Calamansi','Ube','Champorado','Penguin','Llama','Potato','Waffle','Noodle','Pickle','Taco','Capybara','Panda','Narwhal','Cupcake','Meatball','Dumpling','Capacitor','Resistor','Volt','Diode','Toaster','Pancake','Chicharon','Kakanin'];
+const pickR = a => a[crypto.getRandomValues(new Uint32Array(1))[0] % a.length];
+function funnyName(){
+  for (let i = 0; i < 40; i++){
+    const adj = pickR(NICK_ADJ);
+    let pool = NICK_NOUN;
+    if (Math.random() < 0.45){ const same = NICK_NOUN.filter(n => n[0] === adj[0]); if (same.length) pool = same; }
+    const name = adj + ' ' + pickR(pool);
+    if (name.length <= 20) return name;
+  }
+  return 'Mystery Mango';
+}
+function nickChips(){
+  const last = lsGet('qp.name', '');
+  const set = new Set(); while (set.size < 3) set.add(funnyName());
+  const chips = [...set].map(n => `<button class="nick" data-act="nickPick" data-n="${esc(n)}">${esc(n)}</button>`);
+  if (last) chips.push(`<button class="nick nick-last" data-act="nickPick" data-n="${esc(last)}">Last time: ${esc(last)}</button>`);
+  return `<span class="muted small">Or try:</span>` + chips.join('');
+}
+ACT.nickShuffle = () => {
+  const el = document.getElementById('jname'); if (!el) return;
+  el.value = funnyName();
+  const c = document.getElementById('nickChips'); if (c) c.innerHTML = nickChips();
+};
+ACT.nickPick = btn => { const el = document.getElementById('jname'); if (el){ el.value = btn.dataset.n; el.focus(); } };
 /* ---------- PLAYER ---------- */
 let P = null;
 ACT.join = () => go('join');
@@ -3323,8 +3360,11 @@ RENDER.join = pin => {
       ${netStatus === 'setup' ? `<p class="muted">This copy of QuizPop isn’t connected to a game server yet. Ask the host for their link.</p>` : ''}
       ${netStatus === 'none' ? `<p class="muted">Can’t reach the game server. Check your internet connection and reload.</p>` : ''}
       <div class="field"><label for="jpin">Game PIN</label><input id="jpin" class="input pin-input" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="000000" value="${esc(pin || '')}" data-enter="joinGo" data-in="pinOnly" ${blocked ? 'disabled' : pin ? '' : 'data-autofocus'}></div>
-      <div class="field"><label for="jname">Nickname</label><input id="jname" class="input" maxlength="20" autocomplete="nickname" placeholder="What should the screen call you?" value="${esc(lsGet('qp.name', ''))}" data-enter="joinGo" ${blocked ? 'disabled' : pin ? 'data-autofocus' : ''}></div>
-      <button class="btn btn-primary btn-big" data-act="joinGo" style="justify-content:center" ${blocked ? 'disabled' : ''}>Join</button>
+      <div class="field"><label for="jname">Nickname</label>
+        <div class="nick-row"><input id="jname" class="input" maxlength="20" autocomplete="off" placeholder="What should the screen call you?" value="${esc(funnyName())}" data-enter="joinGo" ${blocked ? 'disabled' : ''}><button class="btn dice" data-act="nickShuffle" aria-label="Give me another funny nickname" title="Another one" ${blocked ? 'disabled' : ''}>🎲</button></div>
+        <div class="nick-chips" id="nickChips">${nickChips()}</div>
+      </div>
+      <button class="btn btn-primary btn-big" data-act="joinGo" style="justify-content:center" ${blocked ? 'disabled' : pin ? 'data-autofocus' : ''}>Join</button>
       <p class="muted small" id="joinMsg" role="status">${netStatus === 'pending' ? 'Connecting to the game server…' : ''}</p>
     </div></div>`;
 };
