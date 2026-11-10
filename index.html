@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>QuizPop</title>
+<title>TUMPAK! Ganern</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
 
 <!-- ================================================================
@@ -2667,6 +2667,15 @@ pre.rules{ background:var(--surface); border:2px solid var(--line); border-radiu
 .scene-palosebo .tag{ max-width:15cqw; }
 .scene-jeep .tag{ max-width:24cqw; }
 @media (prefers-reduced-motion:reduce){ .racer{ transition:none; } }
+
+/* brand */
+.mark{ gap:2px; }
+.mark .ganern{ font-weight:600; font-style:italic; color:var(--pop); margin-left:6px; transform:rotate(-4deg); display:inline-block; }
+.hero h1{ letter-spacing:-0.035em; }
+.ganern-big{ display:block; font-size:.5em; font-style:italic; font-weight:600; color:var(--pop); transform:rotate(-4deg); transform-origin:left; margin:.08em 0 0 .12em; letter-spacing:-0.01em; }
+.share-mark{ font-size:34px; font-weight:800; letter-spacing:-0.03em; }
+.share-mark .ganern{ font-style:italic; font-weight:600; color:#FF4F79; margin-left:8px; display:inline-block; transform:rotate(-4deg); }
+.qr-overlay .panel .url{ font-weight:600; word-break:break-all; }
 </style>
 </head>
 <body>
@@ -2708,7 +2717,7 @@ const SHAPE_NAMES = ['Star','Bolt','Moon','Heart'];
 const TEAM_NAMES = ['Stars','Bolts','Moons','Hearts'];
 const shape = (i, cls = 'shape') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="${SHAPE_PATHS[i]}"/></svg>`;
 const TICK = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-const wordmark = () => `<button class="mark" data-act="home" aria-label="QuizPop home">QuizPop<span class="dots"><i class="o0"></i><i class="o1"></i><i class="o2"></i><i class="o3"></i></span></button>`;
+const wordmark = () => `<button class="mark" data-act="home" aria-label="TUMPAK! Ganern home">TUMPAK!<span class="ganern">Ganern</span><span class="dots"><i class="o0"></i><i class="o1"></i><i class="o2"></i><i class="o3"></i></span></button>`;
 const pageUrl = () => location.origin + location.pathname;
 
 /* ---------- Firebase connection ---------- */
@@ -2819,10 +2828,10 @@ RENDER.home = () => {
   else if (netStatus === 'setup') note = `<div class="status-note spread"><span><b>Live games aren’t set up yet.</b> This copy needs your Firebase settings. Solo practice and the quiz maker already work.</span><button class="btn" data-act="setup">See setup steps</button></div>`;
   else if (netStatus === 'none') note = `<div class="status-note"><b>Can’t reach the game server.</b> ${esc(netErr)} Check the internet connection and reload. Solo practice still works.</div>`;
   return `<div class="wrap">
-    <div class="topbar"><span></span><button class="btn btn-ghost" data-act="library">Your quizzes</button></div>
+    <div class="topbar"><span></span><div class="row"><button class="btn" data-act="shareApp">Share app</button><button class="btn btn-ghost" data-act="library">Your quizzes</button></div></div>
     <section class="hero">
       <div>
-        <h1>Quiz&shy;Pop</h1>
+        <h1 aria-label="TUMPAK! Ganern">TUMPAK!<span class="ganern-big" aria-hidden="true">Ganern</span></h1>
         <p class="lede">Put a quiz on the big screen. Everyone answers on their phone. Fast and right wins.</p>
       </div>
       <div class="tiles-demo" aria-hidden="true">
@@ -2913,7 +2922,7 @@ CHG.importQuiz = async el => {
   try {
     const q = normalizeQuiz(JSON.parse(await f.text())); q.id = 'q' + rid(10);
     Store.save(q); toast('Imported “' + cut(q.title, 40) + '”.'); render();
-  } catch (e){ toast(e && e.message === 'storage' ? 'This browser’s storage is full. Delete a quiz with images first.' : 'That file isn’t a QuizPop quiz.'); }
+  } catch (e){ toast(e && e.message === 'storage' ? 'This browser’s storage is full. Delete a quiz with images first.' : 'That file isn’t a TUMPAK! quiz.'); }
 };
 function normalizeQuiz(d){
   if (!d || !Array.isArray(d.questions) || !d.questions.length) throw new Error('bad');
@@ -3033,7 +3042,7 @@ ACT.deleteQuiz = () => {
 ACT.exportQuiz = () => {
   const body = clone(B.quiz); delete body.sample;
   const name = (B.quiz.title || 'quiz').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() || 'quiz';
-  saveFile(name + '.quizpop.json', JSON.stringify(body, null, 2), 'application/json');
+  saveFile(name + '.tumpak.json', JSON.stringify(body, null, 2), 'application/json');
 };
 
 /* ---------- SCORING ---------- */
@@ -3270,7 +3279,7 @@ ACT.hostCsv = () => {
   const rows = [['Rank','Name', ...(teams ? ['Team'] : []), 'Score','Correct answers','Questions']];
   for (const p of ranked()) rows.push([p.rank, p.name, ...(teams ? [TEAM_NAMES[p.team] || ''] : []), p.score, p.correct, H.quiz.questions.length]);
   const csv = rows.map(r => r.map(v => { const s = String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\n');
-  saveFile('quizpop-results-' + H.pin + '.csv', '\ufeff' + csv, 'text/csv');
+  saveFile('tumpak-results-' + H.pin + '.csv', '\ufeff' + csv, 'text/csv');
 };
 ACT.hostAgain = () => {
   if (!H) return;
@@ -3356,7 +3365,7 @@ function sceneDeco(key, n){
       <div class="train"><div class="win w1"></div><div class="win w2"></div><div class="door"><i class="dl"></i><i class="dr"></i></div><div class="stripe"></div></div>`;
   }
   if (key === 'ayuda'){
-    return `<div class="hall"></div>${bunting}<div class="banner">AYUDA PAYOUT · Brgy. QuizPop</div>
+    return `<div class="hall"></div>${bunting}<div class="banner">AYUDA PAYOUT · Brgy. Tumpak</div>
       <div class="official">${personSvg('kapitan', 'stand')}</div><div class="table"><span>₱</span></div><div class="envelope">₱</div>`;
   }
   return `<div class="road">${Array.from({ length: n }, (_, i) => `<div class="lane" style="bottom:${6 + i * (80 / Math.max(n, 1))}%"></div>`).join('')}</div><div class="finish"></div><div class="sign dest">QUIAPO</div>`;
@@ -3528,6 +3537,28 @@ ACT.nickShuffle = () => {
   const c = document.getElementById('nickChips'); if (c) c.innerHTML = nickChips();
 };
 ACT.nickPick = btn => { const el = document.getElementById('jname'); if (el){ el.value = btn.dataset.n; el.focus(); } };
+/* ---------- share the app ---------- */
+let shareOpen = false;
+function shareOverlay(){
+  const url = pageUrl();
+  return `<div class="qr-overlay" data-act="shareClose" role="dialog" aria-label="Share TUMPAK! Ganern"><div class="panel" data-act="noop">
+    <div class="share-mark">TUMPAK!<span class="ganern">Ganern</span></div>
+    ${qrSvg(url)}
+    <div class="url">${esc(url.replace(/^https?:\/\//, ''))}</div>
+    <div class="row" style="justify-content:center">
+      <button class="btn btn-primary" data-act="copyLink">Copy link</button>
+      ${navigator.share ? '<button class="btn" data-act="nativeShare">Share…</button>' : ''}
+      <button class="btn btn-ghost" data-act="shareClose">Close</button>
+    </div>
+    <span class="muted small">Scan with a phone camera to open the app</span></div></div>`;
+}
+ACT.noop = () => {};
+ACT.shareApp = () => { shareOpen = true; const d = document.createElement('div'); d.id = 'shareLayer'; d.innerHTML = shareOverlay(); document.body.appendChild(d); };
+ACT.shareClose = () => { shareOpen = false; const d = document.getElementById('shareLayer'); if (d) d.remove(); };
+ACT.copyLink = async () => { try { await navigator.clipboard.writeText(pageUrl()); toast('Link copied.'); } catch { toast('Copy failed. Long-press the link to copy it.'); } };
+ACT.nativeShare = async () => { try { await navigator.share({ title: 'TUMPAK! Ganern', text: 'Laro tayo ng TUMPAK! Ganern', url: pageUrl() }); } catch {} };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && shareOpen) ACT.shareClose(); });
+
 /* ---------- PLAYER ---------- */
 let P = null;
 ACT.join = () => go('join');
@@ -3537,7 +3568,7 @@ RENDER.join = pin => {
     <div class="topbar">${wordmark()}<button class="btn btn-ghost" data-act="home">Back</button></div>
     <div class="join-card">
       <h2>Join a game</h2>
-      ${netStatus === 'setup' ? `<p class="muted">This copy of QuizPop isn’t connected to a game server yet. Ask the host for their link.</p>` : ''}
+      ${netStatus === 'setup' ? `<p class="muted">This copy of TUMPAK! isn’t connected to a game server yet. Ask the host for their link.</p>` : ''}
       ${netStatus === 'none' ? `<p class="muted">Can’t reach the game server. Check your internet connection and reload.</p>` : ''}
       <div class="field"><label for="jpin">Game PIN</label><input id="jpin" class="input pin-input" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="000000" value="${esc(pin || '')}" data-enter="joinGo" data-in="pinOnly" ${blocked ? 'disabled' : pin ? '' : 'data-autofocus'}></div>
       <div class="field"><label for="jname">Nickname</label>

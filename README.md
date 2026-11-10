@@ -1,6 +1,6 @@
-# QuizPop
+# TUMPAK! Ganern
 
-A live quiz game: the host shows a PIN and QR code on a big screen, players join on their phones, and fast correct answers score the most points.
+A Pinoy live quiz game: the host shows a PIN and QR code on a big screen, players join on their phones, and fast correct answers score the most points.
 
 ## One-time setup (about 10 minutes)
 
