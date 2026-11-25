@@ -2676,6 +2676,58 @@ pre.rules{ background:var(--surface); border:2px solid var(--line); border-radiu
 .share-mark{ font-size:34px; font-weight:800; letter-spacing:-0.03em; }
 .share-mark .ganern{ font-style:italic; font-weight:600; color:#FF4F79; margin-left:8px; display:inline-block; transform:rotate(-4deg); }
 .qr-overlay .panel .url{ font-weight:600; word-break:break-all; }
+
+/* crowded lobby: fit 30-90 names on one screen */
+.crowd .host-top{ padding:8px 20px; }
+.crowd .lobby-top{ gap:28px; }
+.crowd .qr{ width:200px; padding:10px; gap:4px; font-size:14px; }
+.crowd .pinbox{ padding:4px 0 12px; }
+.crowd .pinbox .how{ font-size:18px; }
+.crowd .pin span{ width:64px; height:84px; font-size:56px; border-radius:14px; }
+.crowd .lobby-bar{ margin-bottom:8px; }
+.crowd .chips{ gap:6px; }
+.crowd .chip{ font-size:16px; padding:5px 12px; }
+.crowd-l .qr{ width:160px; }
+.crowd-l .pin span{ width:54px; height:70px; font-size:44px; border-width:2px; box-shadow:0 4px 0 var(--ink); }
+.crowd-l .lobby-bar .btn-big{ min-height:46px; padding:8px 22px; font-size:18px; }
+.crowd-l .chips{ gap:5px; }
+.crowd-l .chip{ font-size:16px; padding:4px 11px; }
+.crowd-xl .chip{ font-size:14px; padding:3px 9px; } .crowd-xl .team-col .chip{ font-size:12px; padding:1px 7px; }
+.crowd-l .team-col{ padding:10px; } .crowd-l .team-col h3{ margin-bottom:6px; } .crowd-l .team-col .chip{ font-size:13px; padding:2px 8px; }
+/* art prompts */
+.art-panel{ width:min(760px,94vw); max-height:90vh; overflow:auto; align-items:stretch !important; text-align:left !important; }
+.art-item{ display:flex; flex-direction:column; gap:6px; }
+.art-item textarea{ font-size:14px; background:#F4F6FB; color:#151C3D; border-color:#D3D9EE; }
+
+/* palosebo generated art */
+.scene.art{ height:auto; aspect-ratio:2576/1438; background:#7FC8F8 center/100% 100% no-repeat; }
+.scene-palosebo.art{ background-image:url(art/palosebo-bg.jpg); }
+.scene-mrt.art{ background-image:url(art/mrt-bg.jpg); }
+.scene-ayuda.art{ background-image:url(art/ayuda-bg.jpg); }
+.person-art{ width:auto; display:block; }
+.scene.art .racer.talk{ z-index:6; }
+.moving .person-art{ animation:bob .28s ease-in-out infinite alternate; }
+.scene.done .moving .person-art{ animation:none; }
+.scene.art .captain{ position:absolute; left:76%; bottom:33%; height:30cqh; width:auto; translate:-50% 0; z-index:4; }
+.scene-mrt.art.done .finale{ opacity:0; transition:opacity .5s ease; }
+.mrt-card{ position:absolute; right:1.5%; bottom:3%; height:58cqh; z-index:7; opacity:0; transform:scale(.5); transform-origin:bottom right; transition:opacity .4s, transform .6s cubic-bezier(.2,1.4,.4,1); }
+.scene.done .mrt-card{ opacity:1; transform:none; }
+.mrt-card img{ height:100%; width:auto; display:block; filter:drop-shadow(0 4px 10px rgba(0,0,0,.25)); }
+.mrt-card .tag{ position:absolute; left:50%; bottom:2%; transform:translateX(-50%); max-width:none !important; }
+.mrt-card .bubble{ left:50%; }
+.scene.art .racer{ gap:2px; }
+.scene.art .tag{ max-width:11.4cqw; font-size:clamp(10px,.95vw,14px); padding:2px 6px; }
+.scene.art .finale .tag{ position:relative; z-index:2; }
+.scene.art .climber{ height:24cqh; width:auto; display:block; }
+.moving .climber{ animation:bob .28s ease-in-out infinite alternate; }
+.scene.done .moving .climber{ animation:none; }
+.scene.art .winner{ position:absolute; left:50%; height:30cqh; width:auto; opacity:0; transition:opacity .5s ease; pointer-events:none; }
+.scene.done .finale .winner{ opacity:1; }
+.scene.done .finale .climber{ opacity:0; transition:opacity .4s ease; }
+.scene-palosebo.art .finale .bubble{ bottom:auto; top:-6cqh; left:auto; right:calc(50% + 13cqh); transform:scale(.4); }
+.scene-palosebo.art.done .finale .bubble{ transform:scale(1); }
+.scene-palosebo.art .finale .bubble::after{ display:none; }
+.pod-art{ height:clamp(90px,16vh,150px); width:auto; margin-bottom:-4px; }
 </style>
 </head>
 <body>
@@ -3056,7 +3108,7 @@ function scoreFor(q, ms, streak){
 /* ---------- HOST ---------- */
 let H = null;
 const MAX_PLAYERS = 90;
-let hostSetupQuiz = null, setupMode = 'classic', setupTeams = 2, setupScenes = true;
+let hostSetupQuiz = null, setupMode = 'classic', setupTeams = 2, setupTheme = 'palosebo';
 function needNet(){
   if (netStatus === 'ready') return true;
   if (netStatus === 'setup'){ go('setup'); return false; }
@@ -3074,16 +3126,18 @@ RENDER.hostSetup = () => {
       <button class="action" data-act="setMode" data-m="teams" style="${setupMode === 'teams' ? 'border-color:var(--brand)' : ''}" aria-pressed="${setupMode === 'teams'}"><div class="glyph o1">${shape(1,'icon')}</div><b>Teams</b><span>Players pick a team on their phone. Team score is the average per player, so smaller teams can still win.</span></button>
     </div>
     ${setupMode === 'teams' ? `<div class="row" style="margin-top:18px"><span class="muted">Number of teams</span>${[2,3,4].map(n => `<button class="btn ${setupTeams === n ? 'btn-primary' : ''}" data-act="setTeams" data-n="${n}">${n}</button>`).join('')}</div>` : ''}
-    <div class="row" style="margin-top:22px"><span class="muted">Leaderboard</span><button class="btn ${setupScenes ? 'btn-primary' : ''}" data-act="setScenes" data-v="1">Pinoy scenes</button><button class="btn ${setupScenes ? '' : 'btn-primary'}" data-act="setScenes" data-v="0">Plain list</button><span class="muted small">Palosebo, MRT line, ayuda payout and jeepney race, one after another</span></div>
+    <div class="field" style="margin-top:22px"><span class="muted">Leaderboard theme (stays the same the whole game)</span>
+      <div class="row">${THEME_CHOICES.map(([k, label]) => `<button class="btn ${setupTheme === k ? 'btn-primary' : ''}" data-act="setTheme" data-v="${k}" aria-pressed="${setupTheme === k}">${label}</button>`).join('')}
+        ${ART_PROMPTS[setupTheme] ? `<button class="btn btn-ghost" data-act="artPrompts">🎨 Art prompts for this theme</button>` : ''}</div></div>
     <div class="row" style="margin-top:28px"><button class="btn btn-primary btn-big" data-act="hostCreate">Open the lobby</button></div>
   </div>`;
 };
 ACT.setMode = el => { setupMode = el.dataset.m; render(); };
 ACT.setTeams = el => { setupTeams = +el.dataset.n; render(); };
-ACT.setScenes = el => { setupScenes = el.dataset.v === '1'; render(); };
+ACT.setTheme = el => { setupTheme = el.dataset.v; render(); };
 ACT.hostCreate = async el => {
   el.disabled = true;
-  const ok = await hostStart({ quiz: clone(hostSetupQuiz), mode: setupMode, teamCount: setupTeams, scenes: setupScenes, phase: 'lobby', qi: -1, players: [], ban: [] }, true);
+  const ok = await hostStart({ quiz: clone(hostSetupQuiz), mode: setupMode, teamCount: setupTeams, theme: setupTheme, phase: 'lobby', qi: -1, players: [], ban: [] }, true);
   if (!ok) el.disabled = false;
 };
 async function claimPin(){
@@ -3110,11 +3164,12 @@ async function hostStart(saved, fresh){
     return false;
   }
   H = {
-    pin, ref, quiz: saved.quiz, mode: saved.mode, teamCount: saved.teamCount || 2, scenes: saved.scenes !== false, prevScores: new Map(), prevOrder: [],
+    pin, ref, quiz: saved.quiz, mode: saved.mode, teamCount: saved.teamCount || 2, theme: SCENES[saved.theme] || saved.theme === 'plain' ? saved.theme : 'palosebo', prevScores: new Map(), prevOrder: [],
     since: Date.now(), phase: saved.phase, qi: saved.qi, qid: null, qStart: 0,
     players: new Map((saved.players || []).map(p => [p.pid, { ...p, online: false }])),
     ban: new Set(saved.ban || []), answers: new Map(), dist: [0,0,0,0], timers: [], tick: null, prevRanks: new Map()
   };
+  loadArt(H.theme);
   H.offConn = onConnected(() => { if (!H) return; ref.child('hostOn').onDisconnect().set(false); ref.child('hostOn').set(true); });
   H.playersCb = ref.child('players').on('value', snap => hostPlayers(snap.val() || {}));
   view = 'host'; render();
@@ -3134,7 +3189,7 @@ ACT.discardResume = () => {
 };
 function saveHost(){
   if (!H) return;
-  lsSet('qp.host', { pin: H.pin, quiz: H.quiz, mode: H.mode, teamCount: H.teamCount, scenes: H.scenes, phase: H.phase, qi: H.qi,
+  lsSet('qp.host', { pin: H.pin, quiz: H.quiz, mode: H.mode, teamCount: H.teamCount, theme: H.theme, phase: H.phase, qi: H.qi,
     players: [...H.players.values()].map(({ online, ...p }) => p), ban: [...H.ban], savedAt: Date.now() });
 }
 function endHosting(close){
@@ -3201,7 +3256,7 @@ function pushState(){
   const q = H.quiz.questions[H.qi];
   const s = { v: 1, since: H.since, mode: H.mode, phase: H.phase, qi: H.qi, qn: H.quiz.questions.length, qid: H.qid || '', title: cut(H.quiz.title, 60) };
   if (H.mode === 'teams'){ s.tc = H.teamCount; s.ts = teamScores().map(t => t.avg); }
-  if (H.phase === 'board' && H.scenes !== false) s.scene = sceneKey(H.qi);
+  if (H.phase === 'board' && SCENES[H.theme]) s.scene = H.theme;
   if (q && H.phase !== 'lobby' && H.phase !== 'final'){ s.lim = q.lim; s.kind = q.kind; s.nopt = q.opts.length; s.m = q.opts.map(o => o ? 1 : 0); }
   if (q && (H.phase === 'question' || H.phase === 'reveal')){ s.q = cut(q.text, 200); s.o = q.opts.map(o => o || ''); }
   if (q && H.phase === 'reveal') s.ok = q.ok;
@@ -3327,8 +3382,46 @@ const SCENES = {
   ayuda:    { title: 'Ayuda Payout', lead: 'Salamat po, Kap!', drop: 'Nasaan ID ko?', kind: 'queue', phone: 'in the ayuda line' },
   jeep:     { title: 'Karera ng Jeep', lead: 'Para po! Panalo!', drop: 'Na-flat!', kind: 'lanes', phone: 'in the jeepney race' }
 };
-const SCENE_ORDER = ['palosebo', 'mrt', 'ayuda', 'jeep'];
-const sceneKey = qi => SCENE_ORDER[Math.max(0, qi) % SCENE_ORDER.length];
+const ART_STYLE = 'Flat vector illustration, bright cheerful colors, clean rounded shapes, friendly cartoon style, no text, no letters, no logos, no watermark.';
+const ART_PROMPTS = {
+  palosebo: [
+    ['Scene background (16:9)', 'Wide 16:9 background of a Filipino town fiesta palosebo contest on a sunny afternoon: six tall greased bamboo poles standing in a row across a grassy plaza, a small red prize bag tied at the top of each pole, colorful banderitas bunting strung overhead, blue sky with a bright sun, a cheering crowd silhouette at the back, the space between the poles left empty for characters. ' + ART_STYLE],
+    ['Climber characters', 'Set of six cute chibi Filipino fiesta contestants climbing a bamboo pole, each hugging the pole with arms and legs, funny determined faces, plain colorful T-shirts and shorts in red, teal, yellow, blue, purple and orange, side view, each on a transparent background. ' + ART_STYLE],
+    ['Winner pose', 'Cute chibi Filipino contestant at the top of a greased bamboo pole, one arm raised holding a prize bag, shouting with joy, sweat drops and sparkles, transparent background. ' + ART_STYLE]
+  ],
+  mrt: [
+    ['Scene background (16:9)', 'Wide 16:9 background of a Metro Manila elevated train platform during rush hour: light gray tiled floor with a yellow and black safety line along the edge, a modern white commuter train with its doors closed arriving on the right side, overhead station signs left blank, a digital arrival board, empty floor space in the middle for a queue of people. ' + ART_STYLE],
+    ['Commuter characters', 'Set of six cute chibi Filipino office commuters standing in line, side view facing right, holding bags, phones and coffee, one yawning, one checking a watch, one fanning herself, plain colorful outfits, each on a transparent background. ' + ART_STYLE],
+    ['Winner pose', 'Cute chibi Filipino commuter stepping into an open train door with a huge relieved smile and arms up, sparkles around, transparent background. ' + ART_STYLE]
+  ],
+  ayuda: [
+    ['Scene background (16:9)', 'Wide 16:9 background of a Philippine barangay covered court on payout day: wooden floor, colorful banderitas bunting overhead, a long blue table on the right with stacks of envelopes, a blank green tarpaulin banner on the wall, plastic monobloc chairs at the back, empty floor in the middle for a line of people. ' + ART_STYLE],
+    ['Residents in line', 'Set of six cute chibi Filipino residents waiting in line, side view facing right, holding ID cards and folders, one with an umbrella, one fanning with a folder, one checking pockets, plain colorful clothes, each on a transparent background. ' + ART_STYLE],
+    ['Barangay captain', 'Cute chibi Filipino barangay captain in a white barong behind a table, smiling and handing out a white envelope, transparent background. ' + ART_STYLE]
+  ],
+  jeep: [
+    ['Scene background (16:9)', 'Wide 16:9 background of a friendly jeepney race on a wide multi-lane Manila road seen from the side, five empty lanes with dashed white lines, a black and white checkered finish line near the right edge, green roadside with palm trees and a church silhouette in the distance, empty lanes for vehicles. ' + ART_STYLE],
+    ['Jeepney racers', 'Set of five cute chunky cartoon Filipino jeepneys seen from the side facing right, each a different bright color (red, teal, yellow, blue, purple) with chrome trim, a small flag on the hood, a cheerful driver in the window, exhaust puffs behind, each on a transparent background. ' + ART_STYLE],
+    ['Winner pose', 'Cute cartoon Filipino jeepney crossing a checkered finish line with confetti, the driver waving out the window, transparent background. ' + ART_STYLE]
+  ]
+};
+function artOverlay(key){
+  const name = (THEME_CHOICES.find(t => t[0] === key) || [, key])[1];
+  return `<div class="qr-overlay" data-act="artClose" role="dialog" aria-label="Art prompts"><div class="panel art-panel" data-act="noop">
+    <div class="spread" style="width:100%"><h3>Art prompts · ${esc(name)}</h3><button class="btn btn-ghost" data-act="artClose">Close</button></div>
+    <p class="muted small" style="text-align:left">Copy a prompt into an image generator (Copilot Designer, Gemini, ChatGPT, Firefly, etc.) to make leaderboard art for this theme.</p>
+    ${ART_PROMPTS[key].map(([title, text], i) => `<div class="art-item"><div class="spread"><b>${esc(title)}</b><button class="btn" data-act="copyArt" data-i="${i}">Copy</button></div><textarea class="input" readonly rows="4">${esc(text)}</textarea></div>`).join('')}
+  </div></div>`;
+}
+ACT.artPrompts = () => { const d = document.createElement('div'); d.id = 'artLayer'; d.innerHTML = artOverlay(setupTheme); document.body.appendChild(d); };
+ACT.artClose = () => { const d = document.getElementById('artLayer'); if (d) d.remove(); };
+ACT.copyArt = async el => {
+  const text = ART_PROMPTS[setupTheme][+el.dataset.i][1];
+  try { await navigator.clipboard.writeText(text); toast('Prompt copied.'); }
+  catch { const t = el.closest('.art-item').querySelector('textarea'); t.focus(); t.select(); toast('Press Ctrl + C to copy.'); }
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape') ACT.artClose(); });
+const THEME_CHOICES = [['palosebo', 'Palosebo'], ['mrt', 'Pila sa MRT'], ['ayuda', 'Ayuda payout'], ['jeep', 'Karera ng jeep'], ['plain', 'Plain list']];
 const SHIRTS = ['#E8455F','#0F9E8E','#F2A900','#3B6CF2','#8E5BD9','#FF7A2F','#1FA34A','#D14FA0'];
 const SKINS = ['#F2C9A0','#D9A574','#B9814F','#8D5A34','#E8B98C'];
 const HAIRS = ['#1E1A17','#3A2A1E','#2B2B2B','#5A3A22'];
@@ -3354,6 +3447,32 @@ function jeepSvg(seed){
     <circle cx="28" cy="48" r="9" fill="#1E1A17"/><circle cx="28" cy="48" r="3.5" fill="#C7CED9"/><circle cx="96" cy="48" r="9" fill="#1E1A17"/><circle cx="96" cy="48" r="3.5" fill="#C7CED9"/>
     <circle class="puff p1" cx="0" cy="40" r="4" fill="#C7CED9"/><circle class="puff p2" cx="-4" cy="36" r="3" fill="#C7CED9"/></svg>`;
 }
+/* Generated art for the palosebo theme (files in the art/ folder). Falls back to the drawn scene if they don't load. */
+const PALO_ART = {
+  poles: [0.4379, 0.5606, 0.3168, 0.6821, 0.1953, 0.8028], // pole centres, #1 in the middle and the rest fanning out
+  low: 16.5, high: 45.6,                                     // climber bottom range (% from scene bottom)
+  climberPole: [0.1982, 0.1988, 0.1988, 0.2031, 0.2025, 0.2031], // pole position inside each climber image
+  winnerPole: 0.4646, winnerLift: 22.3                        // winner image: pole position, offset above the climber spot
+};
+/* Queue themes: generated people walk along the floor toward the front of the line */
+const QUEUE_ART = {
+  mrt:   { file: 'mrt-commuter',   people: 6,  front: 72, gap: 13, feet: 8,  h: 40 },
+  ayuda: { file: 'ayuda-resident', people: 10, front: 54, gap: 11, feet: 10, h: 38 }
+};
+const n1 = k => Array.from({ length: k }, (_, i) => i + 1);
+const ART_FILES = {
+  palosebo: ['art/palosebo-bg.jpg', 'art/palosebo-winner.webp', ...n1(6).map(i => `art/palosebo-climber-${i}.webp`)],
+  mrt:      ['art/mrt-bg.jpg', 'art/mrt-winner.webp', ...n1(6).map(i => `art/mrt-commuter-${i}.webp`)],
+  ayuda:    ['art/ayuda-bg.jpg', 'art/ayuda-captain.webp', ...n1(10).map(i => `art/ayuda-resident-${i}.webp`)]
+};
+const POD_ART = { palosebo: 'art/palosebo-winner.webp', mrt: 'art/mrt-winner.webp', ayuda: 'art/ayuda-captain.webp' };
+const artOk = {}, artLoading = {};
+function loadArt(key){
+  const files = ART_FILES[key];
+  if (!files || artOk[key] || artLoading[key]) return; artLoading[key] = true;
+  let left = files.length, failed = false;
+  files.forEach(f => { const im = new Image(); im.onload = im.onerror = e => { if (e.type === 'error') failed = true; if (--left === 0){ artOk[key] = !failed; artLoading[key] = false; } }; im.src = f; });
+}
 function sceneDeco(key, n){
   const bunting = `<div class="bunting">${Array.from({ length: 18 }, (_, i) => `<i style="background:${SHIRTS[i % 8]}"></i>`).join('')}</div>`;
   if (key === 'palosebo'){
@@ -3371,31 +3490,40 @@ function sceneDeco(key, n){
   return `<div class="road">${Array.from({ length: n }, (_, i) => `<div class="lane" style="bottom:${6 + i * (80 / Math.max(n, 1))}%"></div>`).join('')}</div><div class="finish"></div><div class="sign dest">QUIAPO</div>`;
 }
 function sceneHtml(){
-  const key = sceneKey(H.qi), sc = SCENES[key];
+  const key = H.theme, sc = SCENES[key];
   const list = ranked().slice(0, sc.kind === 'height' ? 6 : 5), n = list.length;
   const total = H.quiz.questions.reduce((a, q) => a + 1000 * (q.pts || 0), 0) || 1000;
   const frac = v => clamp(v / (total * 0.85), 0, 1);
   const prevIdx = new Map((H.prevOrder || []).map((pid, i) => [pid, i]));
+  const art = !!artOk[key], QA = art && QUEUE_ART[key], finale = art && H.qi + 1 >= H.quiz.questions.length;
+  const qslot = k => k >= n ? -15 : QA.front - k * QA.gap;
   const slot = k => k >= n ? -12 : (key === 'mrt' ? 80 : 74) - k * (66 / Math.max(n, 4));
   // only one 'oops' bubble per scene: the biggest drop, else someone who scored nothing
   let oops = null, worst = 0;
-  list.forEach((p, i) => { const pi = prevIdx.has(p.pid) ? prevIdx.get(p.pid) : -1; if (i > 0 && pi >= 0 && i - pi > worst){ worst = i - pi; oops = p.pid; } });
-  if (!oops && H.qi >= 0){ const z = list.find((p, i) => i > 0 && p.lastPts === 0); if (z) oops = z.pid; }
+  const minI = QA ? 2 : 1; // in the art queues, keep the oops bubble away from the leader's
+  list.forEach((p, i) => { const pi = prevIdx.has(p.pid) ? prevIdx.get(p.pid) : -1; if (i >= minI && pi >= 0 && i - pi > worst){ worst = i - pi; oops = p.pid; } });
+  if (!oops && H.qi >= 0){ const z = list.find((p, i) => i >= minI && p.lastPts === 0); if (z) oops = z.pid; }
   const racers = list.map((p, i) => {
     const ps = H.prevScores && H.prevScores.has(p.pid) ? H.prevScores.get(p.pid) : 0;
     const pi = prevIdx.has(p.pid) ? prevIdx.get(p.pid) : n + 1;
     let prop, from, to, pos;
-    if (sc.kind === 'height'){ prop = 'bottom'; from = 9 + frac(ps) * 62; to = 9 + frac(p.score) * 62; pos = `left:${(i + 0.5) / n * 100}%;`; }
+    if (QA){ prop = 'left'; from = qslot(pi); to = qslot(i); pos = `bottom:${QA.feet}%;`; }
+    else if (art){ prop = 'bottom'; from = PALO_ART.low + frac(ps) * (PALO_ART.high - PALO_ART.low); to = finale && i === 0 ? PALO_ART.high : PALO_ART.low + frac(p.score) * (PALO_ART.high - PALO_ART.low); pos = `left:${PALO_ART.poles[i] * 100}%;`; }
+    else if (sc.kind === 'height'){ prop = 'bottom'; from = 9 + frac(ps) * 62; to = 9 + frac(p.score) * 62; pos = `left:${(i + 0.5) / n * 100}%;`; }
     else if (sc.kind === 'lanes'){ prop = 'left'; from = 36 + frac(ps) * 50; to = 36 + frac(p.score) * 50; pos = `bottom:${6 + (n - 1 - i) * (78 / n)}%;`; }
     else { prop = 'left'; from = slot(pi); to = slot(i); pos = 'bottom:14%;'; }
     const moving = Math.abs(to - from) > 0.4;
     const bubble = i === 0 ? sc.lead : (p.pid === oops ? sc.drop : '');
-    const fig = sc.kind === 'lanes' ? jeepSvg(p.pid) : personSvg(p.pid, sc.kind === 'height' ? 'climb' : 'stand');
-    return `<div class="racer r${i + 1} ${moving ? 'moving' : ''} ${i % 2 && sc.kind === 'queue' ? 'alt' : ''}" style="${pos}${prop}:${from}%;transition-delay:${((n - i) * 0.12).toFixed(2)}s" data-prop="${prop}" data-to="${to}">
+    const look = hashStr(p.pid) % 6;
+    const fig = QA ? `<img class="person-art" src="art/${QA.file}-${hashStr(p.pid) % QA.people + 1}.webp" alt="" style="height:${QA.h}cqh">`
+      : art ? `<img class="climber" src="art/palosebo-climber-${look + 1}.webp" alt="" style="translate:${((0.5 - PALO_ART.climberPole[look]) * 100).toFixed(1)}% 0">`
+        + (finale && i === 0 ? `<img class="winner" src="art/palosebo-winner.webp" alt="" style="bottom:${PALO_ART.winnerLift}cqh;translate:-${(PALO_ART.winnerPole * 100).toFixed(1)}% 0">` : '')
+      : sc.kind === 'lanes' ? jeepSvg(p.pid) : personSvg(p.pid, sc.kind === 'height' ? 'climb' : 'stand');
+    return `<div class="racer r${i + 1} ${moving ? 'moving' : ''} ${bubble ? 'talk' : ''} ${finale && i === 0 ? 'finale' : ''} ${i % 2 && sc.kind === 'queue' ? 'alt' : ''}" style="${pos}${prop}:${from}%;transition-delay:${((n - i) * 0.12).toFixed(2)}s" data-prop="${prop}" data-to="${to}">
       ${bubble ? `<span class="bubble ${i === 0 ? 'win' : ''}">${esc(bubble)}</span>` : ''}
       <span class="tag"><b>${p.rank}</b> ${esc(p.name)}${sc.kind === 'queue' ? '' : ` <em>${fmt(p.score)}</em>`}</span>${fig}</div>`;
   }).join('');
-  return `<div class="scene scene-${key}" role="img" aria-label="${esc(sc.title)}: animated standings"><span class="scene-title">${sc.title}</span>${sceneDeco(key, n)}${racers}${n ? '' : '<p class="scene-empty">Wala pang players</p>'}</div>`;
+  return `<div class="scene scene-${key} ${art ? 'art' : ''}" role="img" aria-label="${esc(sc.title)}: animated standings"><span class="scene-title">${sc.title}</span>${art ? '' : sceneDeco(key, n)}${art && key === 'ayuda' ? '<img class="captain" src="art/ayuda-captain.webp" alt="">' : ''}${racers}${finale && key === 'mrt' && list[0] ? `<div class="mrt-card"><span class="bubble win">${esc(sc.lead)}</span><img src="art/mrt-winner.webp" alt=""><span class="tag"><b>1</b> ${esc(list[0].name)}</span></div>` : ''}${n ? '' : '<p class="scene-empty">Wala pang players</p>'}</div>`;
 }
 function animateScene(){
   const scene = app.querySelector('.scene'); if (!scene) return;
@@ -3430,7 +3558,8 @@ RENDER.host = () => {
       const un = players.filter(p => p.team < 0);
       roster = `<div class="team-cols" style="grid-template-columns:repeat(${H.teamCount},minmax(0,1fr))">${cols}</div>${un.length ? `<p class="muted" style="margin:14px 0 8px">Still choosing a team (they’ll be placed when you start):</p><div class="chips">${un.map(chip).join('')}</div>` : ''}`;
     } else roster = `<div class="chips">${players.map(chip).join('')}</div>`;
-    return `<div class="host">${top}
+    const crowd = players.length > 75 ? 'crowd crowd-l crowd-xl' : players.length > 54 ? 'crowd crowd-l' : players.length > 30 ? 'crowd' : '';
+    return `<div class="host ${crowd}">${top}
       <div class="lobby-top">
         ${qr ? `<div class="qr" aria-label="QR code to join">${qr}<span>Scan to join</span></div>` : ''}
         <div class="pinbox"><p class="how">Go to <b>${esc(location.host + location.pathname)}</b>, tap <b>Join with a PIN</b>, and enter</p><div class="pin" aria-label="Game PIN ${esc(H.pin.split('').join(' '))}">${pins}</div></div>
@@ -3488,13 +3617,13 @@ RENDER.host = () => {
       ${rows || '<p class="muted">No scores yet.</p>'}
       <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn btn-primary btn-big" data-act="hostNext">${last ? 'Show the winners' : 'Next question'}</button></div>
     </div>`;
-    if (H.scenes === false) return `<div class="host">${top}<div class="stage">${standings}</div></div>`;
+    if (!SCENES[H.theme]) return `<div class="host">${top}<div class="stage">${standings}</div></div>`;
     return `<div class="host">${top}<div class="stage"><div class="board-wrap">${sceneHtml()}${standings}</div></div></div>`;
   }
 
   if (H.phase === 'final'){
     const list = ranked();
-    const pod = (p, k) => p ? `<div class="pod p${k} reveal"><span class="who">${esc(p.name)}</span><span class="pts">${fmt(p.score)} pts · ${p.correct}/${H.quiz.questions.length}</span><div class="block">${k}</div></div>` : `<div class="pod p${k}"></div>`;
+    const pod = (p, k) => p ? `<div class="pod p${k} reveal">${k === 1 && artOk[H.theme] ? `<img class="pod-art" src="${POD_ART[H.theme]}" alt="">` : ''}<span class="who">${esc(p.name)}</span><span class="pts">${fmt(p.score)} pts · ${p.correct}/${H.quiz.questions.length}</span><div class="block">${k}</div></div>` : `<div class="pod p${k}"></div>`;
     let teamBanner = '';
     if (H.mode === 'teams'){
       const ts = teamScores().sort((a, b) => b.avg - a.avg);
